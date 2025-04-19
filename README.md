@@ -1,2 +1,2 @@
 # Spesa-Pasquetta-2025-
-per dividerci la spesa
+programma per dividerci la spesa perché mi avete rotto le palle

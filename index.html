@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Spesa Pasquetta 2025</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f9f9f9;
+      padding: 30px;
+      max-width: 600px;
+      margin: auto;
+      color: #333;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+    }
+
+
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin: 6px 0 12px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    button {
+      width: 100%;
+      background-color: #27ae60;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #219150;
+    }
+
+    .risultato {
+      background-color: #ffffff;
+      margin-top: 25px;
+      padding: 15px;
+      border-left: 4px solid #27ae60;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Spesa Pasquetta 2025</h2>
+
+  <label>Chi prende le braciole?</label>
+  <input id="pbraciole" type="text">
+
+  <label>Quanto costano le braciole?</label>
+  <input id="costobaciole" type="number">
+
+  <label>Chi prende la carne?</label>
+  <input id="pcarne" type="text">
+
+  <label>Chi prende panna e fragole?</label>
+  <input id="ppanna" type="text">
+
+  <label>Quanto costano panna e fragole?</label>
+  <input id="costopanna" type="number" step="0.01">
+
+  <label>Chi prende la pasta?</label>
+  <input id="ppasta" type="text">
+
+  <label>Quanto costa la pasta?</label>
+  <input id="costopasta" type="number" step="0.01">
+
+  <label>Chi prende il pane?</label>
+  <input id="ppane" type="text">
+
+  <label>Quanto costa il pane?</label>
+  <input id="costopane" type="number" step="0.01">
+
+  <button onclick="calcola()">Calcola</button>
+
+  <div class="risultato" id="output"></div>
+
+  <script>
+    function calcola() {
+      const costospesa = 79;
+      const costocarne = 90;
+      const costoragu = 16.30 + (26.66 - 16);
+      const costotiramisu = 12;
+      const persone = 20;
+
+      const costobaciole = parseFloat(document.getElementById("costobaciole").value);
+      const costopanna = parseFloat(document.getElementById("costopanna").value);
+      const costopasta = parseFloat(document.getElementById("costopasta").value);
+      const costopane = parseFloat(document.getElementById("costopane").value);
+
+      if (isNaN(costobaciole) || isNaN(costopanna) || isNaN(costopasta) || isNaN(costopane)) {
+        document.getElementById("output").textContent = "⚠️ Inserisci tutti i costi correttamente.";
+        return;
+      }
+
+      //funzione per capitalizzare la prima lettera
+      function capitalizza(nome) {
+        if (!nome) return "";
+        return nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
+      }
+
+      //capitalizzazione degli input
+      const pbraciole = capitalizza(document.getElementById("pbraciole").value.trim());
+      const pcarne = capitalizza(document.getElementById("pcarne").value.trim());
+      const ppanna = capitalizza(document.getElementById("ppanna").value.trim());
+      const ppasta = capitalizza(document.getElementById("ppasta").value.trim());
+      const ppane = capitalizza(document.getElementById("ppane").value.trim());
+
+      const totalecosto = costospesa + costobaciole + costocarne + costopanna + costopasta + costopane + costoragu + costotiramisu;
+      const media = totalecosto / persone;
+
+      //mappa persona -> spesa
+      const spese = {};
+
+      //sommare contributi senza duplicare nomi
+      function aggiungiSpesa(nome, costo) {
+        if (!nome) return;
+        if (spese[nome]) {
+          spese[nome] += costo;
+        } else {
+          spese[nome] = costo;
+        }
+      }
+
+      //aggiunta spese
+      aggiungiSpesa("Fabiana", costoragu);
+      aggiungiSpesa("Francesca", costotiramisu);
+      aggiungiSpesa("Alessio", costospesa);
+
+      aggiungiSpesa(pbraciole, costobaciole);
+      aggiungiSpesa(pcarne, costocarne);
+      aggiungiSpesa(ppanna, costopanna);
+      aggiungiSpesa(ppasta, costopasta);
+      aggiungiSpesa(ppane, costopane);
+
+      // Output finale
+      let output = `Costo totale: €${totalecosto.toFixed(2)}\n`;
+      output += `Costo per persona: €${media.toFixed(2)}\n\n`;
+
+      for (const persona in spese) {
+        output += `${persona} ha speso: €${spese[persona].toFixed(2)}\n`;
+      }
+
+      output += `\n💶 Per rendere la spesa equa:\n`;
+
+      for (const persona in spese) {
+        const diff = spese[persona] - media;
+        if (diff > 0) {
+          output += `${persona} deve ricevere €${diff.toFixed(2)}\n`;
+        } else if (diff < 0) {
+          output += `${persona} deve dare €${Math.abs(diff).toFixed(2)}\n`;
+        } else {
+          output += `${persona} è in pari.\n`;
+        }
+      }
+
+      document.getElementById("output").textContent = output;
+    }
+  </script>
+
+</body>
+</html>
